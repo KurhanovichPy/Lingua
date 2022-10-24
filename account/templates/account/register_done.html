@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block title %} Registration {%  endblock %}
+{% block main %}
+{% load static %}
+    <div class="main-container">
+        <h1>Welcome {{ new_user.first_name }}!</h1>
+        <h2>Your account has been successfully created. Now you can
+            <a href="javascript: void(0);" class="modal-link" data-modal-id="1">log in</a>.
+        </h2>
+        <svg style="height: 400px; width: 400px" >
+            <use xlink:href="{% static 'dictionary/img/language.svg' %}#freepik_stories-learning-languages"></use>
+        </svg>
+        <a href="https://storyset.com/people" style="color: #e8eded">People illustrations by Storyset</a>
+    </div>
+{% endblock %}

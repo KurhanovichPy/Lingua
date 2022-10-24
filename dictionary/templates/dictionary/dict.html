@@ -1,0 +1,183 @@
+{% extends 'layout.html' %}
+{%  load static %}
+{% block title %} Dictionary {%  endblock %}
+{% block main %}
+    <div class="content">
+        <div class="words-and-control">
+            {% if word_count == 0 %}
+                <div class="show-words" style="align-items: center; ">
+                    <img src="{% static 'dictionary/img/empty_folder.png' %}" width="400" height="auto">
+                    <p style="margin: 0">
+                        <a href="https://storyset.com/people" style="color: #e8eded">People illustrations by Storyset</a>
+                    </p>
+                </div>
+            {% else %}
+                <div class="show-words">
+                    {% for word in object_list %}
+                    <div class="word">
+                        <div  class="word-main">
+                            <div class="word-status">
+                                <p class="translate">{{ word.translate_word }}</p>
+                                {% if word.status == 1 %}
+                                    <svg class="icon" >
+                                        <use xlink:href="{% static 'dictionary/img/red_star.svg' %}#svg5204"></use>
+                                    </svg>
+                                {% elif word.status == 5 %}
+                                    <svg class="icon" >
+                                        <use xlink:href="{% static 'dictionary/img/green_star.svg' %}#svg5204"></use>
+                                    </svg>
+                                {% elif word.status == 6 %}
+                                    <svg class="icon" >
+                                        <use xlink:href="{% static 'dictionary/img/violet_star.svg' %}#svg5204"></use>
+                                    </svg>
+                                {% else %}
+                                    <svg class="icon" >
+                                        <use xlink:href="{% static 'dictionary/img/yellow_star.svg' %}#svg5204"></use>
+                                    </svg>
+
+                                {% endif %}
+                                <input class="icon" type="image" src="{% static 'dictionary/img/voice.png' %}"
+                                   onclick="playMusic('/static/dictionary/mp3/{{ word.translate_word }}.mp3' )"
+                                   value="sound">
+                            </div>
+                            <p class="native">{{ word.native_word }}</p>
+                        </div>
+                        <div class="word-control">
+                            <a href="javascript: void(0);"
+                               class="modal-link" data-update-id={{word.id}} data-update-native={{word.native_word}}
+                               data-update-translate={{word.translate_word}} data-modal-id="6">
+                                <img class="icon" src= "{% static 'dictionary/img/edit.png' %}" >
+                            </a>
+                            <a href="javascript: void(0);" class="modal-link" data-id={{word.id}}
+                               data-word={{word.translate_word}} data-modal-id="3">
+                                <img class="icon" src= "{% static 'dictionary/img/trash.png' %}">
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+                <div class="page-control">
+                    <a href="javascript: void(0);" class="modal-link" data-name={{ dir_name }}
+                       data-pk={{ pk }} data-modal-id="5">
+                    Delete folder</a>
+                    <a href="javascript: void(0);" class="modal-link" data-id={{ pk }} data-modal-id="4">
+                    Add new word  </a>
+                    {% if word_count == 0 %}
+                    <a href="javascript: void(0);" class="modal-link" data-modal-id="7">Training</a>
+                    {% else %}
+                    <a href="/{{ pk }}/quiz">Training</a>
+                    {% endif %}
+                    <a href="/">Back</a>
+                </div>
+        </div>
+    </div>
+    <div class="modal-overlay" data-modal-id="3">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                <form class="modal" id="callback-form1" method="post" enctype="multipart/form-data"
+                      autocomplete="off" action="">
+                    <div class="modal__close"></div>
+                        <div class="modal__content_center">
+                            <p id="delete-word"></p>
+                            <p class="contact-form-submit text-center topmargin_30">
+                            <button type="submit" name="contact_submit"
+                                            class="theme_button">Confirm</button>
+                            </p>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+        </div>
+    <div class="modal-overlay" data-modal-id="4">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                <form class="modal" id="callback-form2" method="post" enctype="multipart/form-data"
+                      autocomplete="off" action="">
+                    <div class="modal__close"></div>
+                    <div class="modal__content">
+                        <p class="native-form item">
+                        <label for="native">Native
+                        <span class="required">*</span>
+                        </label>
+                        <input type="text" value="" name="native_word" id="native" class="form-control">
+                        </p>
+                        <p class="translate-form item">
+                        <label for="translate">Translate
+                        <span class="required">*</span>
+                        </label>
+                        <input type="text" size="30" value="" name="translate_word" id="translate" class="form-control">
+                        </p>
+                        <p class="form-submit text-center topmargin_30">
+                            <button type="submit"  name="contact_submit" class="theme_button">Create</button>
+                        </p>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" data-modal-id="5">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                    <form class="modal" id="callback-form3" method="post" enctype="multipart/form-data"
+                          autocomplete="off" action="">
+                        <div class="modal__close"></div>
+                        <div class="modal__content_center">
+                            <p id="delete-folder"></p>
+                            <p class="contact-form-submit text-center topmargin_30">
+                            <button type="submit" name="contact_submit"
+                                            class="theme_button">Confirm</button>
+                            </p>
+                        </div>
+                        {% csrf_token %}
+                    </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" data-modal-id="6">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                <form class="modal" id="callback-form5" method="post" enctype="multipart/form-data"
+                autocomplete="off" action="">
+                    <div class="modal__close"></div>
+                    <div class="modal__content">
+                        <p class="native-form item">
+                            <label for="native_word">Native
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" value="" id="native_word" name="native_word"  class="form-control">
+                        </p>
+                        <p class="translate-form item">
+                            <label for="translate_word">Translate
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" size="30" value="" id="translate_word"
+                            name="translate_word"  class="form-control">
+                        </p>
+                        <p class="form-submit text-center topmargin_30">
+                            <button type="submit"  name="contact_submit"
+                                        class="theme_button">Update</button>
+                        </p>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" data-modal-id="7">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                <form class="modal" id="callback-form6" method="post" enctype="multipart/form-data"
+                      autocomplete="off" action="">
+                    <div class="modal__close"></div>
+                    <div class="modal__content">
+                        <p> Add words for training</p>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+{%  endblock %}

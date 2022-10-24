@@ -1,0 +1,98 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{% static 'css/normalize.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Short+Stack&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=K2D:wght@100;800&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{% static 'account/js/login.js' %}"></script>
+    <script src="{% static 'dictionary/js/create.js' %}"></script>
+    <script src="{% static 'dictionary/js/update.js' %}"></script>
+    <script src="{% static 'dictionary/js/delete.js' %}"></script>
+    <script src="{% static 'dictionary/js/delete_folder.js' %}"></script>
+    <script src="{% static 'dictionary/js/audio.js' %}"></script>
+    <title>{%  block title %}{% endblock %}</title>
+</head>
+<body>
+    <input type="checkbox" id="hmt" class="hidden-menu-ticker">
+    <label class="btn-menu" for="hmt">
+        <span class="first"></span>
+        <span class="second"></span>
+        <span class="third"></span>
+    </label>
+    <div class="hidden-menu">
+    {% if username == 'AnonymousUser' %}
+        <div class="menu-list">
+
+            <a href="javascript: void(0);" class="modal-link" data-modal-id="1">Log in</a>
+            <a href="/account/logout">Logout</a>
+            <a href="{% url 'directories' %}">Dictionary</a>
+            <a href="javascript: void(0);" class="modal-link" data-modal-id="1">Statistic</a>
+        </div>
+    {% else %}
+        <div class="menu-list height40">
+            <div class="account">
+                <p class="username">{{ username }}</p>
+                <img style="width: 100px; height: auto" src="{% static 'account/img/account.png' %}">
+                <a href="/account/logout">Logout</a>
+            </div>
+            <a href="{% url 'directories' %}">Dictionary</a>
+            <a href="/statistic">Statistic</a>
+        </div>
+        {% endif %}
+    </div>
+    {% block main %}
+    {% endblock %}
+    <div class="modal-overlay" data-modal-id="1">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                <form class="modal"
+                      id="callback-form"
+                      method="post"
+                      enctype="multipart/form-data"
+                      autocomplete="off"
+                      action="/account/login/">
+                    <div class="modal__close"></div>
+                    <div class="modal__header">Login</div>
+                    <div class="modal__content">
+                        <p class="contact-form-name item">
+                            <label for="username">Login
+                                <span class="required">*</span>
+                            </label>
+                            <input type="text" value="" name="username" id="username" class="form-control">
+                        </p>
+                        <p class="contact-form-password item">
+                            <label for="password">Password
+                                <span class="required">*</span>
+                            </label>
+                            <input type="password" size="30" value="" name="password" id="password" class="form-control">
+                        </p>
+                        <p class="contact-form-submit text-center topmargin_30">
+                            <button type="submit" id="contact_form_submit" name="contact_submit"
+                                    class="theme_button">Continue</button>
+                        </p>
+                        <a href="/account/register">Registration</a>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

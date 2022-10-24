@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+{% block title %} Dictionary {%  endblock %}
+{% block main %}
+    <div class="content">
+        <div class="container">
+            <div id="question-container" class="hide">
+              <div id="question">Question</div>
+              <div id="answer-buttons" class="btn-grid">
+                <button class="btn">Answer 1</button>
+                <button class="btn">Answer 2</button>
+                <button class="btn">Answer 3</button>
+                <button class="btn">Answer 4</button>
+              </div>
+            </div>
+            <div class="change_language">
+                <p style="margin: 0; font-size: 23px">ENG-RU</p>
+                {% if current_method == 'POST' %}
+                    <div class="switch-btn switch-on"></div>
+                {% else %}
+                    <div class="switch-btn"></div>
+                {% endif %}
+            </div>
+            <div class="controls">
+                <button id="start-btn" class="start-btn btn">Start</button>
+                <button id="next-btn" class="next-btn btn hide">Next</button>
+            </div>
+            <a href="/">
+                <button id="back" class="next-btn btn">Back</button>
+            </a>
+      </div>
+        <script>
+            $('.switch-btn').click(function(){
+              $(this).toggleClass('switch-on');
+              if ($(this).hasClass('switch-on')) {
+                $(this).trigger('on.switch');
+                let form = document.createElement('form');
+                    form.action = '';
+                    form.method = 'POST';
+
+                    form.innerHTML = '<input name="switch_eng" value="1"> {% csrf_token %}';
+
+                    // перед отправкой формы, её нужно вставить в документ
+                    document.body.append(form);
+
+                    form.submit();
+              } else {
+                $(this).trigger('off.switch');
+                  let form = document.createElement('form');
+                    form.action = '';
+                    form.method = 'GET';
+                    // перед отправкой формы, её нужно вставить в документ
+                    document.body.append(form);
+
+                    form.submit();
+              }
+            });
+        </script>
+        <script>
+            const startButton = document.getElementById('start-btn')
+            const nextButton = document.getElementById('next-btn')
+            const questionContainerElement = document.getElementById('question-container')
+            const questionElement = document.getElementById('question')
+            const answerButtonsElement = document.getElementById('answer-buttons')
+            var correct_answers_dict = []
+
+            let shuffledQuestions, currentQuestionIndex
+
+            startButton.addEventListener('click', startGame)
+            nextButton.addEventListener('click', () => {
+              currentQuestionIndex++
+              setNextQuestion()
+            })
+
+            function startGame() {
+              startButton.classList.add('hide')
+              shuffledQuestions = questions.sort(() => Math.random() - .5)
+              currentQuestionIndex = 0
+              questionContainerElement.classList.remove('hide')
+              setNextQuestion()
+            }
+
+            function setNextQuestion() {
+              resetState()
+              showQuestion(shuffledQuestions[currentQuestionIndex])
+            }
+
+            function showQuestion(question) {
+              questionElement.innerText = question.question
+              question.answers.forEach(answer => {
+                const button = document.createElement('button')
+                button.innerText = answer.text
+                button.classList.add('btn')
+                if (answer.correct) {
+                  button.dataset.correct = answer.correct
+                }
+                button.addEventListener('click', selectAnswer)
+                answerButtonsElement.appendChild(button)
+              })
+            }
+
+            function resetState() {
+              clearStatusClass(document.body)
+              nextButton.classList.add('hide')
+              while (answerButtonsElement.firstChild) {
+                answerButtonsElement.removeChild(answerButtonsElement.firstChild)
+              }
+            }
+
+            function selectAnswer(e) {
+              const selectedButton = e.target
+              const correct = selectedButton.dataset.correct
+              setStatusClass(document.body, correct)
+              Array.from(answerButtonsElement.children).forEach(button => {
+                setStatusClass(button, button.dataset.correct)
+              })
+              if (shuffledQuestions.length > currentQuestionIndex + 1) {
+                nextButton.classList.remove('hide')
+              } else {
+                startButton.innerText = 'Restart'
+                startButton.classList.remove('hide')
+              }
+            }
+
+            function setStatusClass(element, correct) {
+              clearStatusClass(element)
+              if (correct) {
+                element.classList.add('correct')
+              } else {
+                element.classList.add('wrong')
+              }
+            }
+
+            function clearStatusClass(element) {
+              element.classList.remove('correct')
+              element.classList.remove('wrong')
+            }
+            const questions = []
+            var words_dict = {{ words|safe }};
+            var rand_answers = {{ answers|safe }};
+            var numb = 0;
+            for(var key in words_dict) {
+                var value = words_dict[key];
+                var answers_list = [
+                    {text: value, correct: true}]
+
+                for ( var counter = 0; counter < 3; counter++) {
+                    var rand = rand_answers[numb]
+                    if(rand === value){
+                        numb += 1;
+                        rand = rand_answers[numb]
+                    }
+                    answers_list.push({text: rand, correct: false})
+                    numb += 1;
+                }
+                answers_list.sort(()=>Math.random()-0.5)
+                questions.push({question: key,
+                answers: answers_list
+
+            })
+            }
+        </script>
+    </div>
+{%  endblock %}

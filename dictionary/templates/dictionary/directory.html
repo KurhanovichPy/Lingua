@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+{% block title %} Dictionary {%  endblock %}
+{% block main %}
+    {%  load static %}
+    {% if username == 'AnonymousUser' %}
+        <div class="main-container">
+            <h1>Welcome to Lingua</h1>
+            <h2>Learn new words and expressions easily and quickly.
+                <a href="javascript: void(0);" class="modal-link" data-modal-id="1">Log in</a></h2>
+            <svg style="height: 400px; width: 400px" >
+                <use xlink:href="{% static 'dictionary/img/language.svg' %}#freepik_stories-learning-languages"></use>
+            </svg>
+            <a href="https://storyset.com/people" style="color: #e8eded">People illustrations by Storyset</a>
+        </div>
+    {% else %}
+        <div class="content">
+            <div class="words-and-control folders">
+                <div class="content-direct">
+                     {% if dir_count == 0 %}
+                        <img src="{% static 'dictionary/img/empty_folder.png' %}" width="500" height="auto">
+                        <p style="margin: 0">
+                            <a href="https://storyset.com/people" style="color: #e8eded">People illustrations by Storyset</a>
+                        </p>
+                    {% else %}
+                    {% for directory in object_list  %}
+                        <div class="directory">
+                            <a href="/directory/{{ directory.id }} ">
+                                <img style="width: 100px; height: auto" src="{% static 'dictionary/img/directory.png' %}" alt="directory">
+                                <p style="text-align: center; margin: 0;color: black">{{ directory.name }}</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                    {% endif %}
+
+                </div>
+                <div class="page-control folder">
+                    <a href="javascript: void(0);"
+                       class="modal-link" data-modal-id="2">Add folder</a>
+                    <div class="modal-overlay" data-modal-id="2">
+                            <div class="modal-table">
+                                <div class="modal-table-cell">
+                                    <form class="modal" id="callback-form" method="post" enctype="multipart/form-data"
+                                          autocomplete="off" action="/create/">
+                                        <div class="modal__close"></div>
+                                        <div class="modal__content">
+                                            <p class="contact-form-name item">
+                                                <label for="firstname">Name
+                                                    <span class="required">*</span>
+                                                </label>
+                                                <input type="text" value="" name="name" id="firstname" class="form-control">
+                                            </p>
+                                            <p class="contact-form-submit text-center topmargin_30">
+                                                <button type="submit" id="contact_form_submit" name="contact_submit"
+                                                            class="theme_button">Create</button>
+                                            </p>
+                                        </div>
+                                        {% csrf_token %}
+                                    </form>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination">
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

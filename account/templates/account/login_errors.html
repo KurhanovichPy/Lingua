@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block title %} Registration {%  endblock %}
+{% block main %}
+{% load static %}
+    <div class="main-container">
+        <h2>{{ error }}. <a href="javascript: void(0);" class="modal-link" data-modal-id="1">Try again.</a></h2>
+        <svg style="height: 400px; width: 400px" >
+            <use xlink:href="{% static 'dictionary/img/language.svg' %}#freepik_stories-learning-languages"></use>
+        </svg>
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+{% block title %} Statistic {% endblock %}
+{% load static %}
+{% block main %}
+    <div class="stat-showcase">
+        <div class="stat-word">
+            <svg>
+                <use xlink:href="{% static 'dictionary/img/red_book.svg' %}#Layer_1"></use>
+            </svg>
+            <p class="stat-title">New words ({{data.new}})</p>
+            {% if data.new == 0 %}
+                <a href="javascript: void(0);" class="modal-link" data-modal-id="8">Training</a>
+            {% else %}
+            <a href="/new/quiz">Training</a>
+            {% endif %}
+        </div>
+        <div class="stat-word">
+            <svg>
+                <use xlink:href="{% static 'dictionary/img/yellow_book.svg' %}#Layer_1"></use>
+            </svg>
+            <p class="stat-title">Learning words ({{data.learning }})</p>
+            {% if data.learning == 0 %}
+                <a href="javascript: void(0);" class="modal-link" data-modal-id="8">Training</a>
+            {% else %}
+                <a href="/learning/quiz">Training</a>
+            {% endif %}
+        </div>
+        <div class="stat-word">
+            <svg>
+                <use xlink:href="{% static 'dictionary/img/green_book.svg' %}#Layer_1"></use>
+            </svg>
+            <p class="stat-title">Learned words ({{data.learned}})</p>
+            {% if data.learned == 0 %}
+                <a href="javascript: void(0);" class="modal-link" data-modal-id="8">Training</a>
+            {% else %}
+            <a href="/learned/quiz">Training</a>
+            {% endif %}
+        </div>
+        <div class="stat-word">
+            <svg>
+                <use xlink:href="{% static 'dictionary/img/violet_book.svg' %}#Layer_1"></use>
+            </svg>
+            <p class="stat-title">Repeat ({{data.repeat}})</p>
+            {% if data.repeat == 0 %}
+                <a href="javascript: void(0);" class="modal-link" data-modal-id="8">Training</a>
+            {% else %}
+            <a href="/repeat/quiz">Training</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="modal-overlay" data-modal-id="8">
+        <div class="modal-table">
+            <div class="modal-table-cell">
+                <form class="modal" id="callback-form6" method="post" enctype="multipart/form-data"
+                    autocomplete="off" action="">
+                    <div class="modal__close"></div>
+                    <div class="modal__content">
+                        <p> There aren't words for training</p>
+                    </div>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+{%  endblock %}

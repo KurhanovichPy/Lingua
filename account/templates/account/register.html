@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block title %} Registration {%  endblock %}
+{% block main %}
+    <div class="content">
+        <div class="registration-form">
+            <h1>Registration</h1>
+            <form action="." method="post">
+                {{ user_form.as_p }}
+                {% csrf_token %}
+                <br>
+                <button type="submit" id="contact_form_submit" name="contact_submit"
+                   class="theme_button border">Create my account</button>
+            </form>
+        </div>
+    </div>
+{%  endblock %}
